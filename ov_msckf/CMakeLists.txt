@@ -9,6 +9,13 @@ if (NOT OpenCV_FOUND)
     find_package(OpenCV 4 REQUIRED)
 endif ()
 find_package(Boost REQUIRED COMPONENTS system filesystem thread date_time)
+# Workaround: define glog::glog before Ceres loads CeresTargets.cmake,
+# which references it but apt-installed glog's CMake config requires libunwind-dev headers.
+if(NOT TARGET glog::glog)
+  find_library(GLOG_LIBRARY glog REQUIRED)
+  add_library(glog::glog INTERFACE IMPORTED)
+  set_target_properties(glog::glog PROPERTIES INTERFACE_LINK_LIBRARIES "${GLOG_LIBRARY}")
+endif()
 find_package(Ceres REQUIRED)
 message(STATUS "OPENCV: " ${OpenCV_VERSION} " | BOOST: " ${Boost_VERSION} " | CERES: " ${Ceres_VERSION})
 
