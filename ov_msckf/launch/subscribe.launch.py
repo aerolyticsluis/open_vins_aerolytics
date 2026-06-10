@@ -104,7 +104,21 @@ def launch_setup(context):
             ],
     )
 
-    return [node1, node2]
+    node3 = Node(
+        package="rtsp_streamer",
+        executable="vins_watchdog",
+        condition=IfCondition(LaunchConfiguration("ov_enable")),
+        namespace=LaunchConfiguration("namespace"),
+        output='screen',
+        parameters=[
+            {"config_path": config_path},
+            {"use_stereo": LaunchConfiguration("use_stereo")},
+            {"max_cameras": LaunchConfiguration("max_cameras")},
+            {"verbosity": LaunchConfiguration("verbosity")},
+        ],
+    )
+
+    return [node1, node2, node3]
 
 
 def generate_launch_description():
